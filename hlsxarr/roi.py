@@ -3,10 +3,9 @@ from .exceptions import AreaTooLargeError
 
 
 class RoiPolygon:
-    MAX_AREA_KM2: float = 500.0
+    MAX_AREA_KM2: float = 100.0
 
-    def __init__(self, id: str, geometry: dict):
-        self.id = id
+    def __init__(self, geometry: dict):
         self.geometry = geometry
         self._crs = _get_bbox_utm_code(self.geometry)
         self._area = self._calculate_area()

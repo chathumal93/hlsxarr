@@ -21,11 +21,15 @@ dependencies = [
 
 [dependency-groups]
 dev = [
+    "pytest-mock>=3.14.0",
     "pytest>=8.3.4",
 ]
 
 [tool.setuptools]
 packages = ["hlsxarr", "hlsxarr.process"]
+
+[tool.pytest.ini_options]
+addopts = ["--import-mode=importlib",]
 
 
 

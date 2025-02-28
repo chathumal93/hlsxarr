@@ -1,4 +1,3 @@
-import logging
 import pandas as pd
 from ..roi import RoiPolygon
 from ..types import BandsType, CollectionType, Collections, Bands
@@ -15,10 +14,20 @@ def _search(
     bands: BandsType,
     limit: int,
 ) -> pd.DataFrame:
-    """"""
+    """Search for HLS data using the STAC API.
+    Args:
+        roi (RoiPolygon): The region of interest.
+        start_date (str): The start date.
+        end_date (str): The end date.
+        collections (CollectionType): The collection type.
+        bands (BandsType): The bands type.
+        limit (int): The limit.
+    Returns:
+        pd.DataFrame: A pandas DataFrame.
+    """
+
     HLS_STAC_URL = "https://cmr.earthdata.nasa.gov/stac/LPCLOUD"
 
-    logging.info("Searching for HLS data...")
     if not isinstance(collections, list):
         raise ValueError("collections should be a list")
 
@@ -47,7 +56,14 @@ def _search(
 
 
 def _create_dataframe(items: List, bands: BandsType) -> pd.DataFrame:
-    """"""
+    """Create a pandas DataFrame from a list of STAC items.
+    Args:
+        items (List): A list of STAC items.
+        bands (BandsType): bands.
+    Returns:
+        pd.DataFrame: A pandas DataFrame.
+    """
+
     rows = []
     for item in items:
         date = item.properties["datetime"]
@@ -71,7 +87,6 @@ def _create_dataframe(items: List, bands: BandsType) -> pd.DataFrame:
                     "date": date,
                     "stac_url": stac_url,
                     "band": band,
-                    # "file_name": f"{sat_id}_{tile_id}_{band}_{date}.nc",
                 }
             )
 

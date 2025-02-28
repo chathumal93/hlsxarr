@@ -1,15 +1,12 @@
 import math
 import requests
+import time
 import numpy as np
 from rasterio.io import MemoryFile
 from rasterio.windows import Window
-
-# from pathlib import Path
 from datetime import datetime
 import xarray as xr
 from typing import Optional
-import time
-import logging
 from ..utils import _get_projected_bounds, _get_roi_xr_utm_cordts, _get_bbox_utm_code
 from .reproject import _reproject_xr_da
 
@@ -23,8 +20,20 @@ def _stac2xrda(
     tile_id: str,
     band: str,
 ) -> Optional[xr.DataArray]:
-    """ """
-    logging.basicConfig(level=logging.INFO)
+    """Read HLS data from the STAC API and return an xarray DataArray.
+
+    Args:
+        roi (dict): The region of interest.
+        token (str): The Earthdata Login token.
+        url (str): The STAC API URL.
+        dt (str): The date and time of the data.
+        sat_id (str): The satellite ID.
+        tile_id (str): The tile ID.
+        band (str): The band name.
+
+    Returns:
+        Optional[xr.DataArray]: An xarray DataArray.
+    """
 
     retries = 5  # Maximum number of retries
     initial_delay = 1  # Initial delay (in seconds)
@@ -123,15 +132,15 @@ def _stac2xrda(
                     return roi_da
 
         except requests.RequestException as e:
-            logging.error(f"Attempt {attempt + 1} failed: {e}")
+            print(f"Attempt {attempt + 1} failed: {e}")
             if attempt < retries - 1:
                 delay = min(delay * 2, max_delay)  # Exponential backoff
-                logging.info(f"Retrying in {delay} seconds...")
+                print(f"Retrying in {delay} seconds...")
                 time.sleep(delay)  # Wait before retrying
             else:
-                logging.error("Max retries reached. Request failed.")
+                print("Max retries reached. Request failed.")
                 return None
 
         except Exception as e:
-            logging.error(f"Error during processing: {e}")
+            print(f"Error during processing: {e}")
             return None

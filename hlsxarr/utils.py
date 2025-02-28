@@ -1,14 +1,12 @@
 from shapely.geometry import shape, Polygon
 from pyproj import Transformer
 from typing import List, Optional
-import pandas as pd
 import math
 import numpy as np
 
 
 def _get_bbox_utm_code(geometry: dict) -> str:
-    """"""
-
+    """Get the UTM CRS code for the geometry"""
     coordinates = geometry["coordinates"][0]
 
     # Get the central longitude and latitude
@@ -26,7 +24,6 @@ def _get_bbox_utm_code(geometry: dict) -> str:
 
 def _get_projected_bounds(geometry, image_crs) -> Optional[List[float]]:
     """Projecting WGS84 ROI to image UTM projection"""
-
     geometry = shape(geometry)
 
     # Initialize the transformer for CRS transformation
@@ -47,7 +44,7 @@ def _get_projected_bounds(geometry, image_crs) -> Optional[List[float]]:
 
 
 def _get_roi_xr_utm_cordts(roi: dict, crs: str, pixel_w: int, pixel_h: int) -> tuple:
-    """"""
+    """Get the x and y coordinates of the ROI in UTM projection for xr dataarray"""
     # Get the bounds of the ROI in UTM coordinates
     minx, miny, maxx, maxy = _get_projected_bounds(roi, crs)
     # Get the width and height of the ROI in pixels
@@ -59,39 +56,3 @@ def _get_roi_xr_utm_cordts(roi: dict, crs: str, pixel_w: int, pixel_h: int) -> t
     y_coords = maxy - pixel_h * (np.arange(height) + 0.5)
 
     return x_coords, y_coords
-
-
-def get_items_df_list(df: pd.DataFrame) -> List[pd.DataFrame]:
-    """Get list of dataframes with unique sat_id and tile_id combinations from filtered
-    hls item collection dataframe"""
-
-    unique_df = df.drop_duplicates(subset=["sat_id", "tile_id"])[["sat_id", "tile_id"]]
-    df_list = []
-
-    for _, row in unique_df.iterrows():
-        mini_df = df.loc[
-            (df["sat_id"] == row["sat_id"]) & (df["tile_id"] == row["tile_id"])
-        ]
-        df_list.append(mini_df)
-
-    return df_list
-
-
-def get_scale_factor(band: str) -> Optional[float]:
-    """Get the scale factor for a specific HLS band"""
-
-    scale_factors = {
-        "B01": 0.0001,
-        "B02": 0.0001,
-        "B03": 0.0001,
-        "B04": 0.0001,
-        "B05": 0.0001,
-        "B06": 0.0001,
-        "B07": 0.0001,
-        "B09": 0.0001,
-        "B10": 0.01,
-        "B11": 0.01,
-        "Fmask": 1,  # No scale value for FMASK
-    }
-
-    return scale_factors.get(band)

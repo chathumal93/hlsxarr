@@ -1,6 +1,5 @@
 import numpy as np
 import xarray as xr
-from typing import Optional
 from rasterio.transform import from_origin, Affine
 from rasterio.warp import calculate_default_transform, reproject, Resampling
 from ..utils import _get_roi_xr_utm_cordts
@@ -12,8 +11,19 @@ def _reproject_xr_da(
     tgt_crs: str,
     pixel_width: int,
     pixel_height: int,
-) -> Optional[xr.DataArray]:
-    """ """
+) -> xr.DataArray:
+    """Reproject an xarray DataArray to a new coordinate reference system (CRS).
+
+    Args:
+        src_xr_arr (xr.DataArray): The source xarray DataArray.
+        roi (dict): The region of interest.
+        tgt_crs (str): The target CRS.
+        pixel_width (int): The pixel width.
+        pixel_height (int): The pixel height.
+
+    Returns:
+        xr.DataArray: The reprojected xarray DataArray.
+    """
     src_width = src_xr_arr.sizes.get(key="x")
     src_height = src_xr_arr.sizes.get(key="y")
     src_left = src_xr_arr.coords["x"].min().item() - (pixel_width / 2)

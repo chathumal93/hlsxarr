@@ -20,3 +20,13 @@ class InvalidBandError(Exception):
         super().__init__(
             f"InvalidBandError: Invalid band: {band}, valid bands are: {Bands.BANDS}"
         )
+
+
+class ProcessError(Exception):
+    def __init__(self, message):
+        super().__init__(f"ProcessError: {message}")
+
+
+class DataReadError(Exception):
+    def __init__(self, message):
+        super().__init__(f"DataReadError: {message}")

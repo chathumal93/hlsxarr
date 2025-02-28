@@ -5,7 +5,14 @@ from typing import List
 
 
 def _merge(df: pd.DataFrame, da_list: List[xr.DataArray]) -> xr.Dataset:
-    """"""
+    """
+    Merge a list of DataArrays into a single Dataset.
+    Args:
+        df: DataFrame with columns 'sat_id' and 'tile_id'.
+        da_list: List of DataArrays to merge.
+    Returns:
+        xr.Dataset: Merged Dataset.
+    """
     single_sat: bool = len(df["sat_id"].unique()) == 1
 
     sat_tile_combinations = df[["sat_id", "tile_id"]].drop_duplicates()
