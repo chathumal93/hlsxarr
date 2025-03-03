@@ -32,6 +32,7 @@ def _merge(df: pd.DataFrame, da_list: List[xr.DataArray]) -> xr.Dataset:
                 ("time"),
                 np.full(merged_ds.time.shape, value, dtype=np.uint8),
             )
+            merged_ds.attrs["sat_ids"] = "L30 : 0, L15 : 1"
 
         merged_ds.attrs.pop("sat_id")
         merged_ds.attrs.pop("tile_id")

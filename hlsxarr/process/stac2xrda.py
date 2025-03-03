@@ -9,6 +9,11 @@ import xarray as xr
 from typing import Optional
 from ..utils import _get_projected_bounds, _get_roi_xr_utm_cordts, _get_bbox_utm_code
 from .reproject import _reproject_xr_da
+import threading
+
+
+# Shared event to signal when to stop all threads
+stop_event = threading.Event()
 
 
 def _stac2xrda(
@@ -40,6 +45,10 @@ def _stac2xrda(
     max_delay = 32  # Maximum delay (in seconds)
 
     delay = initial_delay  # Start with the initial delay
+
+    if stop_event.is_set():
+        print(f"Skipping request for {url}")
+        return None
 
     for attempt in range(retries):
         try:
@@ -132,6 +141,13 @@ def _stac2xrda(
                     return roi_da
 
         except requests.RequestException as e:
+            if "401" in str(e) or "403" in str(e):
+                print(f"Credential error. Check the validity of the token: {e}")
+                print("Exiting...")
+                # Early stopping for 401
+                stop_event.set()
+                break
+
             print(f"Attempt {attempt + 1} failed: {e}")
             if attempt < retries - 1:
                 delay = min(delay * 2, max_delay)  # Exponential backoff

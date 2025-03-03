@@ -25,8 +25,3 @@ class InvalidBandError(Exception):
 class ProcessError(Exception):
     def __init__(self, message):
         super().__init__(f"ProcessError: {message}")
-
-
-class DataReadError(Exception):
-    def __init__(self, message):
-        super().__init__(f"DataReadError: {message}")

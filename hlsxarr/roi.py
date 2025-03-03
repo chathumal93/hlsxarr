@@ -3,7 +3,7 @@ from .exceptions import AreaTooLargeError
 
 
 class RoiPolygon:
-    MAX_AREA_KM2: float = 100.0
+    MAX_AREA_KM2: float = 500.0
 
     def __init__(self, geometry: dict):
         self.geometry = geometry

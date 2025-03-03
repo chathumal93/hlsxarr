@@ -12,10 +12,8 @@ import xarray as xr
 class HLSProcessor:
     def __init__(
         self,
-        roi: dict,
         edl_token: Optional[str] = None,
     ):
-        self.roi = RoiPolygon(geometry=roi)
         self._edl_token = edl_token or os.getenv("EDL_TOKEN")
 
         if not self._edl_token:
@@ -25,6 +23,7 @@ class HLSProcessor:
 
     def process(
         self,
+        roi: dict,
         start_date: str,
         end_date: str,
         collections: CollectionType,
@@ -47,29 +46,32 @@ class HLSProcessor:
         """
 
         try:
+            # Create the ROI polygon
+            roi_polygon = RoiPolygon(geometry=roi)
+
             print("Searching HLS data...")
             df = _search(
-                roi=self.roi,
+                roi=roi_polygon,
                 start_date=start_date,
                 end_date=end_date,
                 collections=collections,
                 bands=bands,
                 limit=limit,
             )
+            print(f"Found {len(df)} scenes")
 
             if df.empty:
                 print("No data found")
                 return
             else:
                 xr_da_list = _read(
-                    roi=self.roi,
+                    roi=roi_polygon,
                     df=df,
                     workers=workers,
                     edl_token=self._edl_token,
                 )
-                if xr_da_list:
+                if len(xr_da_list) > 0:
                     processes_xr_dataset = _merge(df=df, da_list=xr_da_list)
-
                     return processes_xr_dataset
                 else:
                     print("Processing incomplete")

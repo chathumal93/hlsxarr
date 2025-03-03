@@ -5,7 +5,6 @@ from .stac2xrda import _stac2xrda
 from ..roi import RoiPolygon
 import xarray as xr
 from typing import List
-from ..exceptions import DataReadError
 
 
 def _read(
@@ -61,11 +60,9 @@ def _read(
                     if isinstance(result, xr.DataArray):
                         pbar.update(1)
                         data_arrays.append(result)
-                    else:
-                        raise DataReadError(
-                            "Failed to read data. The result is not a DataArray."
-                        )
+
                 except Exception as e:
-                    raise DataReadError(f"Failed to read data. {e}")
+                    print(f"Error reading data: {e}")
+                    return data_arrays
 
     return data_arrays
