@@ -1,8 +1,10 @@
 import numpy as np
 import xarray as xr
+import rasterio
 from rasterio.transform import from_origin, Affine
 from rasterio.warp import calculate_default_transform, reproject, Resampling
 from ..utils import _get_roi_xr_utm_cordts
+import warnings
 
 
 def _reproject_xr_da(
@@ -24,6 +26,9 @@ def _reproject_xr_da(
     Returns:
         xr.DataArray: The reprojected xarray DataArray.
     """
+    # remove the NotGeoreferencedWarning
+    warnings.filterwarnings("ignore", category=rasterio.errors.NotGeoreferencedWarning)
+
     src_width = src_xr_arr.sizes.get(key="x")
     src_height = src_xr_arr.sizes.get(key="y")
     src_left = src_xr_arr.coords["x"].min().item() - (pixel_width / 2)

@@ -30,16 +30,19 @@ class HLSProcessor:
         bands: BandsType,
         limit: int,
         workers: int,
+        max_area_km2: float = 1000,
     ) -> Optional[xr.Dataset]:
         """Process HLS data
 
         Args:
+            roi (dict): Region of interest as GeoJSON geometry dictionary
             start_date (str): Start date for the search
             end_date (str): End date for the search
             collections (CollectionType): HLS collections to search
             bands (BandsType): Bands to read
             limit (int): Maximum number of scenes to search
             workers (int): Number of parallel workers to use for reading data
+            max_area_km2 (float): Maximum area in square kilometers. Defaults to 1000.
 
         Returns:
             xr.Dataset: Merged xarray dataset
@@ -47,7 +50,7 @@ class HLSProcessor:
 
         try:
             # Create the ROI polygon
-            roi_polygon = RoiPolygon(geometry=roi)
+            roi_polygon = RoiPolygon(geometry=roi, max_area_km2=max_area_km2)
 
             print("Searching HLS data...")
             df = _search(
@@ -58,7 +61,7 @@ class HLSProcessor:
                 bands=bands,
                 limit=limit,
             )
-            print(f"Found {len(df)} scenes")
+            print(f"Found {len(df)} urls")
 
             if df.empty:
                 print("No data found")

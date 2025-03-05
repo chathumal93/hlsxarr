@@ -48,4 +48,11 @@ def _merge(df: pd.DataFrame, da_list: List[xr.DataArray]) -> xr.Dataset:
 
     final_ds = xr.concat(ds_list_to_concat, dim="time").sortby("time")
 
+    # Sort variable names alphabetically
+    final_ds = final_ds[[var for var in sorted(final_ds.data_vars)]]
+
+    # Sort dimensions alphabetically
+    sorted_dimensions = sorted(final_ds.dims)
+    final_ds = final_ds.transpose(*sorted_dimensions)
+
     return final_ds

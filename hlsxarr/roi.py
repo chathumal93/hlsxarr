@@ -3,12 +3,11 @@ from .exceptions import AreaTooLargeError
 
 
 class RoiPolygon:
-    MAX_AREA_KM2: float = 500.0
-
-    def __init__(self, geometry: dict):
+    def __init__(self, geometry: dict, max_area_km2: float):
         self.geometry = geometry
         self._crs = _get_bbox_utm_code(self.geometry)
         self._area = self._calculate_area()
+        self._max_area_km2 = max_area_km2
 
         # Validate the ROI area
         self._validate_roi()
@@ -20,8 +19,8 @@ class RoiPolygon:
                 "Invalid ROI type. Only Geojson Polygon Geometry is supported."
             )
 
-        if self._area > RoiPolygon.MAX_AREA_KM2:
-            raise AreaTooLargeError(self._area, RoiPolygon.MAX_AREA_KM2)
+        if self._area > self._max_area_km2:
+            raise AreaTooLargeError(self._area, self._max_area_km2)
 
     def _calculate_area(self) -> float:
         """Helper function to calculate the area of the ROI."""
