@@ -18,6 +18,9 @@ pip install https://github.com/chathumal93/hlsxarr/releases/download/v0.1.0/hlsx
 ```
 
 ### Example Usage
+
+#### [Try on Google Colab](https://colab.research.google.com/github/chathumal93/hlsxarr/blob/main/hlsxarr.ipynb)
+
 ``` python
 from hlsxarr import HLSProcessor
 
@@ -52,5 +55,3 @@ xr_ds = hls.process(
 # HLSL30_ds = xr_ds.sel(time=xr_ds.SAT_ID == 0, drop=True)
 # HLSS30_ds = xr_ds.sel(time=xr_ds.SAT_ID == 1, drop=True)
 ```
-### Run on Google Colab
-<img src="hlsxarr.png" alt="Example Image" width="600">
