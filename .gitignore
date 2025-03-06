@@ -7,16 +7,12 @@ wheels/
 *.egg-info
 .pytest_cache
 
-
 *.csv
 hello.py
 .vscode
 info.txt
 data
 .DS_Store
-output.nc
-
-
 
 # Virtual environments
 .venv
