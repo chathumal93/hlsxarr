@@ -28,11 +28,11 @@ def _merge(df: pd.DataFrame, da_list: List[xr.DataArray]) -> xr.Dataset:
 
         if not single_sat:
             value = 0 if sat_id == "L30" else 1
-            merged_ds["SAT"] = (
+            merged_ds["SAT_ID"] = (
                 ("time"),
                 np.full(merged_ds.time.shape, value, dtype=np.uint8),
             )
-            merged_ds.attrs["sat_ids"] = "L30 : 0, L15 : 1"
+            merged_ds.attrs["sat_ids"] = "L30 : 0, S30 : 1"
 
         merged_ds.attrs.pop("sat_id")
         merged_ds.attrs.pop("tile_id")
@@ -41,7 +41,7 @@ def _merge(df: pd.DataFrame, da_list: List[xr.DataArray]) -> xr.Dataset:
         for var in merged_ds.data_vars:
             merged_ds[var] = (
                 merged_ds[var].astype(np.uint8)
-                if var == "FMASK"
+                if var == "FMASK" or var == "SAT_ID"
                 else merged_ds[var].astype(np.int16)
             )
         ds_list_to_concat.append(merged_ds)
