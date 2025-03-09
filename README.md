@@ -22,6 +22,7 @@ pip install https://github.com/chathumal93/hlsxarr/releases/download/v0.1.0/hlsx
 #### [Try on Google Colab](https://colab.research.google.com/github/chathumal93/hlsxarr/blob/main/hlsxarr.ipynb)
 
 ``` python
+import os
 from hlsxarr import HLSProcessor
 
 roi_dict = {
@@ -37,7 +38,7 @@ roi_dict = {
     "type": "Polygon",
  }
 
-# EDL_TOKEN from env var
+# hls = HLSProcessor(edl_token=os.getenv('EDL_TOKEN))
 hls = HLSProcessor()
 
 xr_ds = hls.process(
