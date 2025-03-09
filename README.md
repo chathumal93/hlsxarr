@@ -38,7 +38,7 @@ roi_dict = {
     "type": "Polygon",
  }
 
-# hls = HLSProcessor(edl_token=os.getenv('EDL_TOKEN))
+# hls = HLSProcessor(edl_token=os.getenv("EDL_TOKEN"))
 hls = HLSProcessor()
 
 xr_ds = hls.process(
